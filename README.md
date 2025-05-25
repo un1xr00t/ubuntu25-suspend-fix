@@ -79,10 +79,36 @@ sudo chmod +x /lib/systemd/system-sleep/rebind-ethernet.sh
 
 ---
 
+## 🧠 Optional: Logitech Logi Bolt Receiver Won’t Wake System
+
+If your system doesn’t wake from sleep via Bluetooth/Logi Bolt keyboard or mouse:
+
+### Step 1: Identify the USB device
+
+```bash
+lsusb | grep -i logi
+```
+
+Example result:
+```
+Bus 005 Device 003: ID 046d:c548 Logitech, Inc. Logi Bolt Receiver
+```
+
+### Step 2: Force power control to "on"
+
+```bash
+for f in /sys/bus/usb/devices/*/power/control; do echo on | sudo tee "$f"; done
+```
+
+This ensures USB devices are allowed to trigger wake events.
+
+---
+
 ## ✅ Final Result
 
 - System now **successfully suspends and resumes** without freezing or rebooting.
 - Ethernet (`eno1`) **comes back alive immediately after resume**, no reboot needed.
+- Optional fix ensures **Logitech wireless devices can wake the PC** from suspend.
 
 ---
 
@@ -110,6 +136,8 @@ Should show the interface being successfully reactivated.
 
 - This was tested on Ubuntu 25.04 (kernel 6.11) with NVIDIA driver 570.133.07.
 - Other workarounds like restarting NetworkManager **alone** failed.
+
+---
 
 ## 📄 License
 
